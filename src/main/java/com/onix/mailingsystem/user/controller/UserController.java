@@ -28,7 +28,7 @@ public class UserController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Page<User> getUsers(@RequestParam(value = "page" , defaultValue = "0") @PositiveOrZero Integer page,
-                               @RequestParam(value = "size", defaultValue = "5") @Min(1) @Max(1000) Integer size){
+                               @RequestParam(value = "size", defaultValue = "5") @Min(1) @Max(100) Integer size){
         return userService.getUsersPage(page, size);
     }
 
@@ -40,14 +40,14 @@ public class UserController {
 
     @PatchMapping("/{username}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> editUserByUsername(@PathVariable("username") String request,
+    public ResponseEntity<String> editUserByUsernameOrEmail(@PathVariable("username") String request,
                                            @RequestBody(required = false) @Valid UserDTO updatedUser){
         return userService.editUserByUsernameOrEmail(request, updatedUser);
     }
 
     @DeleteMapping("/{username}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> deleteUserByUsername(@PathVariable("username") String username){
+    public ResponseEntity<String> deleteUserByUsernameOrEmail(@PathVariable("username") String username){
         return userService.deleteUserByUsernameOrEmail(username);
     }
 

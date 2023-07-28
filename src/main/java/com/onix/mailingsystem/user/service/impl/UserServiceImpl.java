@@ -6,13 +6,13 @@ import com.onix.mailingsystem.user.model.dto.UserDTO;
 import com.onix.mailingsystem.user.model.entity.User;
 import com.onix.mailingsystem.user.repository.UserRepository;
 import com.onix.mailingsystem.user.service.UserService;
+import com.onix.mailingsystem.util.UtilService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 
@@ -21,12 +21,13 @@ import java.time.LocalDateTime;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
+    private UtilService utilService;
 
     @Override
     public ResponseEntity<String> createUser(UserDTO userDTO) {
-        if (userRepository.existsByUsername(userDTO.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "Username is already taken.");
+        utilService.checkIfUserDTOIsEmpty(userDTO);
+        if (userRepository.existsByUsernameOrEmail(userDTO.getUsername(), userDTO.getEmail())) {
+            throw new BadRequestException("User with such username or email is already exists");
         }
 
         User newUser = User.builder()
@@ -40,8 +41,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<User> getUsersPage(Integer page, Integer size) {
+        if (page < 0 || size <= 0) {
+            throw new BadRequestException("Invalid page or size value.");
+        }
+
         PageRequest pageable = PageRequest.of(page - 1, size);
         Page<User> pageUsers = userRepository.findAllByOrderByIdDesc(pageable);
+
         if (pageUsers.isEmpty()) {
             throw new UserNotFoundException();
         }
@@ -50,36 +56,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserByUsernameOrEmail(String request) {
-        return userRepository.findByUsernameOrEmail(request.trim(), request.trim()).orElseThrow(UserNotFoundException::new);
+    public User getUserByUsernameOrEmail(String usernameOrEmail) {
+        return utilService.findByUsernameOrEmail(usernameOrEmail);
     }
 
     @Override
-    public ResponseEntity<String> editUserByUsernameOrEmail(String request, UserDTO updatedUser) {
-        User user = userRepository.findByUsernameOrEmail(request.trim(), request.trim()).orElseThrow(UserNotFoundException::new);
-        checkIfFieldsNotEmpty(updatedUser, user);
+    public ResponseEntity<String> editUserByUsernameOrEmail(String usernameOrEmail, UserDTO updatedUser) {
+        User user = utilService.findByUsernameOrEmail(usernameOrEmail);
+        utilService.checkIfUserDTOIsEmpty(updatedUser);
+        utilService.checkIfUserDTOEquals(user, updatedUser);
+        user.setEmail(utilService.validateField(updatedUser.getEmail(), user.getEmail()));
+        user.setUsername(utilService.validateField(updatedUser.getUsername(), user.getUsername()));
         userRepository.save(user);
         return new ResponseEntity<>("User has been edited successfully!", HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<String> deleteUserByUsernameOrEmail(String request) {
-        User user = userRepository.findByUsernameOrEmail(request.trim(), request.trim()).orElseThrow(UserNotFoundException::new);
+    public ResponseEntity<String> deleteUserByUsernameOrEmail(String usernameOrEmail) {
+        User user = utilService.findByUsernameOrEmail(usernameOrEmail);
         userRepository.delete(user);
         return new ResponseEntity<>("User has been deleted successfully!", HttpStatus.OK);
     }
-
-
-    private void checkIfFieldsNotEmpty(UserDTO updatedUser, User user) {
-        if (updatedUser == null) {
-            throw new BadRequestException("No changes were applied");
-        }
-
-        user.setEmail(validateField(updatedUser.getEmail(), user.getEmail()));
-        user.setUsername(validateField(updatedUser.getUsername(), user.getUsername()));
-    }
-    private String validateField(String requestField, String field) {
-        return requestField == null ? field : requestField.trim();
-    }
-
 }
