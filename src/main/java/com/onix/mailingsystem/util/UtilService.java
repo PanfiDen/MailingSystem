@@ -1,9 +1,11 @@
 package com.onix.mailingsystem.util;
 
+import com.onix.mailingsystem.log.model.response.MailCount;
 import com.onix.mailingsystem.user.model.dto.UserDTO;
 import com.onix.mailingsystem.user.model.entity.User;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
 
 public interface UtilService {
     User findByUsernameOrEmail(String usernameOrEmail);
@@ -18,5 +20,13 @@ public interface UtilService {
 
     String validateField(String requestField, String field);
 
+    void checkIfInvalidEmail(String email);
+
     void checkIfInvalidCronExpression(String cronExpression) throws ParseException;
+
+    MailCount getMailCountByTypeAndUser(User user);
+
+    LocalDateTime getFirstLogByUser(User user);
+
+    LocalDateTime getLastLogByUser(User user);
 }

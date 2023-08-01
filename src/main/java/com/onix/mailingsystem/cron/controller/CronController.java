@@ -37,8 +37,8 @@ public class CronController {
     }
 
     @GetMapping
-    public Page<Cron> getAllCrons(@RequestParam(value = "page" , defaultValue = "0") @PositiveOrZero Integer page,
+    public Page<Cron> getCronsByPage(@RequestParam(value = "page" , defaultValue = "0") @PositiveOrZero Integer page,
                                   @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(100) Integer size){
-        return cronService.getAllCrons(page, size);
+        return cronService.getCronsByPage(page, size);
     }
 }

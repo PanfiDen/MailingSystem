@@ -2,6 +2,7 @@ package com.onix.mailingsystem.exception.handler;
 
 import com.onix.mailingsystem.exception.exceptions.BadRequestException;
 import com.onix.mailingsystem.exception.exceptions.CronNotFoundException;
+import com.onix.mailingsystem.exception.exceptions.LogsNotFoundException;
 import com.onix.mailingsystem.exception.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 public class ExceptionsController {
 
-    @ExceptionHandler({UserNotFoundException.class, CronNotFoundException.class})
+    @ExceptionHandler({UserNotFoundException.class, CronNotFoundException.class, LogsNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> notFoundExceptionHandler(Exception exception){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());

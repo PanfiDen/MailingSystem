@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByUsernameOrEmail(userDTO.getUsername(), userDTO.getEmail())) {
             throw new BadRequestException("User with such username or email is already exists");
         }
+        utilService.checkIfInvalidEmail(userDTO.getEmail());
 
         User newUser = User.builder()
                 .username(userDTO.getUsername().trim())
@@ -65,6 +66,7 @@ public class UserServiceImpl implements UserService {
         User user = utilService.findByUsernameOrEmail(usernameOrEmail);
         utilService.checkIfUserDTOIsEmpty(updatedUser);
         utilService.checkIfUserDTOEquals(user, updatedUser);
+        utilService.checkIfInvalidEmail(updatedUser.getEmail());
         user.setEmail(utilService.validateField(updatedUser.getEmail(), user.getEmail()));
         user.setUsername(utilService.validateField(updatedUser.getUsername(), user.getUsername()));
         userRepository.save(user);

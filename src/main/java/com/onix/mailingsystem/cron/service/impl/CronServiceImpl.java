@@ -10,7 +10,6 @@ import com.onix.mailingsystem.exception.exceptions.CronNotFoundException;
 import com.onix.mailingsystem.user.model.entity.User;
 import com.onix.mailingsystem.user.repository.UserRepository;
 import com.onix.mailingsystem.util.UtilService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,7 +31,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 @Service
-@Slf4j
 public class CronServiceImpl implements CronService {
 
     @Autowired
@@ -81,7 +79,7 @@ public class CronServiceImpl implements CronService {
     }
 
     @Override
-    public Page<Cron> getAllCrons(Integer page, Integer size) {
+    public Page<Cron> getCronsByPage(Integer page, Integer size) {
         if (page < 0 || size <= 0) {
             throw new BadRequestException("Invalid page or size value.");
         }

@@ -16,6 +16,6 @@ public interface CronService {
 
     ResponseEntity<String> deleteCron(String expression);
 
-    Page<Cron> getAllCrons(Integer page, Integer size);
+    Page<Cron> getCronsByPage(Integer page, Integer size);
 
 }
