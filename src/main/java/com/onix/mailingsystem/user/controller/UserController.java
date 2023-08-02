@@ -27,7 +27,7 @@ public class UserController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<User> getUsers(@RequestParam(value = "page" , defaultValue = "0") @PositiveOrZero Integer page,
+    public Page<User> getUsers(@RequestParam(value = "page" , defaultValue = "1") @PositiveOrZero Integer page,
                                @RequestParam(value = "size", defaultValue = "5") @Min(1) @Max(100) Integer size){
         return userService.getUsersPage(page, size);
     }

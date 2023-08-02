@@ -28,13 +28,13 @@ public class UtilServiceImpl implements UtilService {
     private LogRepository logRepository;
 
     @Override
-    public User findByUsernameOrEmail(String usernameOrEmail){
-        return userRepository.findByUsernameOrEmail(usernameOrEmail.trim(), usernameOrEmail.trim()).orElseThrow(UserNotFoundException::new);
+    public User findByUsernameOrEmail(String usernameOrEmail) {
+        return userRepository.findByUsernameOrEmailIgnoreCase(usernameOrEmail.trim(), usernameOrEmail.trim()).orElseThrow(UserNotFoundException::new);
     }
 
     @Override
     public void checkIfUserDTOIsEmpty(UserDTO userDTO) {
-        if (userDTO == null || userDTO.getEmail() == null || userDTO.getUsername() == null){
+        if (userDTO == null || userDTO.getEmail() == null || userDTO.getUsername() == null) {
             throw new BadRequestException("Username and email must not be null");
         }
     }
@@ -48,7 +48,7 @@ public class UtilServiceImpl implements UtilService {
 
     @Override
     public void checkIfExpressionIsEmpty(String expression) {
-        if (expression == null){
+        if (expression == null) {
             throw new BadRequestException("Cron expression cannot be empty");
         }
     }
@@ -69,20 +69,20 @@ public class UtilServiceImpl implements UtilService {
     public void checkIfInvalidEmail(String email) {
         Pattern emailPattern = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
         Matcher matcher = emailPattern.matcher(email);
-        if (!matcher.matches()){
+        if (!matcher.matches()) {
             throw new BadRequestException("Invalid email format");
         }
     }
 
     @Override
-    public void checkIfInvalidCronExpression(String cronExpression){
+    public void checkIfInvalidCronExpression(String cronExpression) {
         if (!CronExpression.isValidExpression(cronExpression)) {
             throw new BadRequestException("Invalid cron format");
         }
     }
 
     @Override
-    public MailCount getMailCountByTypeAndUser(User user){
+    public MailCount getMailCountByTypeAndUser(User user) {
         if (user == null)
             throw new UserNotFoundException();
         Integer restAmount = logRepository.countByMailTypeAndUser(MailType.REST, user)
@@ -95,7 +95,7 @@ public class UtilServiceImpl implements UtilService {
     }
 
     @Override
-    public LocalDateTime getFirstLogByUser(User user){
+    public LocalDateTime getFirstLogByUser(User user) {
         if (user == null)
             throw new UserNotFoundException();
         Optional<Log> firstlogOptional = logRepository.findFirstByUserOrderByCreatedOnAsc(user);
@@ -103,7 +103,7 @@ public class UtilServiceImpl implements UtilService {
     }
 
     @Override
-    public LocalDateTime getLastLogByUser(User user){
+    public LocalDateTime getLastLogByUser(User user) {
         if (user == null)
             throw new UserNotFoundException();
         Optional<Log> lastlogOptional = logRepository.findFirstByUserOrderByCreatedOnDesc(user);
