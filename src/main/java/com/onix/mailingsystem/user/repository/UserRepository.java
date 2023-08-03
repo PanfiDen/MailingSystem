@@ -9,8 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
-    boolean existsByUsernameOrEmailIgnoreCase(String username, String email);
-    Optional<User> findByUsernameOrEmailIgnoreCase(String username, String email);
+    boolean existsByUsernameIgnoreCaseOrEmailIgnoreCase(String username, String email);
+    Optional<User> findByUsernameIgnoreCaseOrEmailIgnoreCase(String username, String email);
     Page<User> findAllByOrderByIdDesc(Pageable pageable);
     @Query("SELECT u FROM User u ORDER BY SIZE(u.logs) DESC")
     Page<User> findAllOrderByLogsSizeDesc(Pageable pageable);

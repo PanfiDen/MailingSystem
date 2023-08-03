@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<String> createUser(UserDTO userDTO) {
         utilService.checkIfUserDTOIsEmpty(userDTO);
-        if (userRepository.existsByUsernameOrEmailIgnoreCase(userDTO.getUsername(), userDTO.getEmail())) {
+        if (userRepository.existsByUsernameIgnoreCaseOrEmailIgnoreCase(userDTO.getUsername(), userDTO.getEmail())) {
             throw new BadRequestException("User with such username or email is already exists");
         }
         utilService.checkIfInvalidEmail(userDTO.getEmail());

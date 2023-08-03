@@ -29,7 +29,7 @@ public class UtilServiceImpl implements UtilService {
 
     @Override
     public User findByUsernameOrEmail(String usernameOrEmail) {
-        return userRepository.findByUsernameOrEmailIgnoreCase(usernameOrEmail.trim(), usernameOrEmail.trim()).orElseThrow(UserNotFoundException::new);
+        return userRepository.findByUsernameIgnoreCaseOrEmailIgnoreCase(usernameOrEmail.trim(), usernameOrEmail.trim()).orElseThrow(UserNotFoundException::new);
     }
 
     @Override

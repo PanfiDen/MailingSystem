@@ -2,6 +2,7 @@ package com.onix.mailingsystem.log.controller;
 
 import com.onix.mailingsystem.log.model.response.GeneralLogsResponse;
 import com.onix.mailingsystem.log.service.LogService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -18,7 +19,8 @@ public class LogController {
     private LogService logService;
 
     @GetMapping
-    public GeneralLogsResponse getLogsByPage(@RequestParam(value = "page" , defaultValue = "0") @PositiveOrZero Integer page,
+    @Operation(summary = "Get statistics about sent emails (pagination).")
+    public GeneralLogsResponse getLogsByPage(@RequestParam(value = "page" , defaultValue = "1") @PositiveOrZero Integer page,
                                              @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(100) Integer size){
         return logService.getLogsByPage(page, size);
     }
