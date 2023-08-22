@@ -1,23 +1,14 @@
 pipeline{
 
     agent any
-
-    environment {
-        PATH = "/opt/apache-maven-3.6.3/bin:$PATH"
+    tools{
+        maven 'Maven-3.9.4'
     }
-
     stages{
-
-        stage("clone code") {
-
+        stage("run") {
             steps {
-                git credentialsId: 'git_credentials', url: 'https://github.com/PanfiDen/MailingSystem.git'
-            }
-        }
-        stage("build code") {
-
-            steps {
-                sh "mvn clean install"
+               echo 'executing maven...' 
+               sh'./pom.xml -v'
             }
         }
     }
