@@ -6,7 +6,10 @@ pipeline{
         stage("run") {
             steps {
                echo 'executing maven...' 
-               sh './mvnw clean package'
+               sh '''
+                    chmod +x mvnw
+                    ./mvnw clean package
+                '''
             }
         }
     }
