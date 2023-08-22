@@ -8,7 +8,7 @@ pipeline{
         stage("run") {
             steps {
                echo 'executing maven...' 
-               sh'./pom.xml -v'
+               sh "mvn clean verify"
             }
         }
     }
